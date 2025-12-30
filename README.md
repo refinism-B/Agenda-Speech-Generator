@@ -24,9 +24,9 @@
 ## ✨ Features
 
 - **Automated Web Crawling**: Extracts event agendas, time slots, and speaker information directly from event websites using `LangChain`'s web loaders.
-- **AI-Powered Script Generation**: Utilizes **Google Gemini** models to generate smooth, professional, and context-aware MC scripts.
+- **AI-Powered Script Generation**: Utilizes **Google Gemini** models to generate professional MC scripts based on **structured prompt instructions**.
 - **Customizable Tone**: Capable of adjusting the speech style based on the event type (e.g., formal for seminars, lively for commercial events).
-- **Structured Output**: Generates results in JSON format, converts them to Pandas DataFrames for easy viewing, and exports final scripts to text files.
+- **Structured Output**: Generates results in JSON format, converts them to Pandas DataFrames, and converts the final output to a text file.
 - **Token Usage Tracking**: Monitors input and output tokens for cost and performance management.
 
 ## 📂 Project Structure
@@ -94,7 +94,8 @@ The project is designed to be run via a Jupyter Notebook.
    Launch Jupyter Notebook or JupyterLab and open `code/crawl.ipynb`.
 
 2. **Set Target URL**
-   In the notebook, modify the `url` variable to point to your target event agenda page:
+   In the notebook, modify the `url` variable to point to your target event agenda page.
+   > **Note**: The target webpage **must** contain a clear event agenda for the crawler to extract.
    ```python
    url = "https://www.digitimes.com.tw/seminar/NTTDATA_20251212/"
    ```
