@@ -69,9 +69,38 @@ def generate_agenda(url_input, file_input):
         return pd.DataFrame(), f"系統發生錯誤: {str(e)}", None, None
 
 # Gradio 介面設計
-with gr.Blocks(title="Agenda Speech Generator", theme=gr.themes.Soft()) as demo:
-    gr.Markdown("# 🎤 活動議程司儀稿生成器")
-    gr.Markdown("輸入活動網頁或上傳議程檔案，自動生成標準司儀稿。")
+custom_css = """
+/* Global Text (+4px - 2px = +2px -> 18px) */
+.gradio-container {
+    font-size: 18px !important;
+}
+/* Ensure standard elements inherit or use this size */
+.gradio-container p, .gradio-container span, .gradio-container label, .gradio-container input, .gradio-container button {
+    font-size: 18px;
+}
+
+/* Main Title (+8px - 2px -> 38px) & Centered */
+#main-title h1 {
+    font-size: 38px !important;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+/* Description (+8px - 2px -> 22px) & Centered */
+#description {
+    font-size: 22px !important;
+    text-align: center;
+}
+
+/* Tab Labels (+6px - 2px -> 20px) */
+.tab-nav button {
+    font-size: 20px !important;
+}
+"""
+
+with gr.Blocks(title="Agenda Speech Generator", theme=gr.themes.Soft(), css=custom_css) as demo:
+    gr.Markdown("# 🎤 活動議程司儀稿生成器", elem_id="main-title")
+    gr.Markdown("輸入活動網頁或上傳議程檔案，自動生成標準司儀稿。", elem_id="description")
     
     with gr.Tabs():
         with gr.TabItem("Web URL"):
