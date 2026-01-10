@@ -1,0 +1,12 @@
+gradio
+pandas
+python-dotenv
+langchain-community
+langchain-core
+langchain-google-genai
+pydantic
+pypdf
+docx2txt
+openpyxl
+unstructured
+markdown
