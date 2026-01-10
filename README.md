@@ -34,14 +34,14 @@
 ```mermaid
 flowchart TD
     %% Nodes
-    Input([Input: Event URL])
-    WebLoader[Web Crawler<br/>(LangChain WebBaseLoader)]
-    PromptEngine[Prompt Engineering<br/>(System & User Prompts)]
-    LLM((Google Gemini LLM))
-    Parser[Output Parser<br/>(JSON & Pydantic)]
-    DataProcess[Data Transformation]
-    OutputDF([Output: DataFrame])
-    OutputTxt([Output: Text File])
+    Input(["Input: Event URL"])
+    WebLoader["Web Crawler<br/>(LangChain WebBaseLoader)"]
+    PromptEngine["Prompt Engineering<br/>(System & User Prompts)"]
+    LLM(("Google Gemini LLM"))
+    Parser["Output Parser<br/>(JSON & Pydantic)"]
+    DataProcess["Data Transformation"]
+    OutputDF(["Output: DataFrame"])
+    OutputTxt(["Output: Text File"])
 
     %% Edge
     Input --> WebLoader
