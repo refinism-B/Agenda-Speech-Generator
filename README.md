@@ -29,6 +29,30 @@
 - **Structured Output**: Generates results in JSON format, converts them to Pandas DataFrames, and converts the final output to a text file.
 - **Token Usage Tracking**: Monitors input and output tokens for cost and performance management.
 
+## 🔄 Workflow
+
+```mermaid
+flowchart TD
+    %% Nodes
+    Input([Input: Event URL])
+    WebLoader[Web Crawler<br/>(LangChain WebBaseLoader)]
+    PromptEngine[Prompt Engineering<br/>(System & User Prompts)]
+    LLM((Google Gemini LLM))
+    Parser[Output Parser<br/>(JSON & Pydantic)]
+    DataProcess[Data Transformation]
+    OutputDF([Output: DataFrame])
+    OutputTxt([Output: Text File])
+
+    %% Edge
+    Input --> WebLoader
+    WebLoader -->|Page Content| PromptEngine
+    PromptEngine -->|Context & Instructions| LLM
+    LLM -->|Raw Response| Parser
+    Parser -->|Structured Data| DataProcess
+    DataProcess --> OutputDF
+    DataProcess --> OutputTxt
+```
+
 ## 📂 Project Structure
 
 ```
