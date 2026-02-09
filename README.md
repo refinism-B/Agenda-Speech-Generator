@@ -9,159 +9,144 @@ app_file: app.py
 pinned: false
 license: mit
 ---
-# Agenda Speech Generator
 
-> [!NOTE]
-> 🚧 **Work in Progress**: This project is currently under active development. Features and interfaces are subject to change.
+# Agenda Speech Generator (活動議程司儀稿生成器)
 
-![Python](https://img.shields.io/badge/Python-3.13%2B-blue?logo=python&logoColor=white)
+> [!TIP]
+> 🟢 **線上試用**：本專案已部署至 Hugging Face Spaces，歡迎直接體驗：[**Agenda Speech Generator Demo**](https://huggingface.co/spaces/bevisrefiner/Agenda-Speech-Generator)
+
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python&logoColor=white)
 ![LangChain](https://img.shields.io/badge/LangChain-Enabled-green?logo=langchain&logoColor=white)
 ![Gemini](https://img.shields.io/badge/Google%20Gemini-Powered-orange?logo=google&logoColor=white)
 
-**Agenda Speech Generator** is an automated tool designed to generate professional Master of Ceremonies (MC) scripts for events. By crawling event agenda webpages and leveraging the power of Large Language Models (LLM), specifically Google Gemini, it creates tailored speeches for every session of your event.
+**Agenda Speech Generator** 是一個自動化工具，旨在為各類活動生成專業的司儀（MC）講稿。透過爬取活動議程網頁或分析上傳的議程檔案，並結合 Google Gemini 大型語言模型（LLM）的強大能力，它能為您快速產出包含開場、串場介紹與結尾的完整活動講稿。
 
-## 📖 Table of Contents
+## 📖 目錄
 
-- [Features](#-features)
-- [Project Structure](#-project-structure)
-- [Tech Stack](#-tech-stack)
-- [Getting Started](#-getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Configuration](#configuration)
-- [Usage](#-usage)
-- [Contributing](#-contributing)
+- [✨ 功能特色](#-功能特色)
+- [🔄 運作流程](#-運作流程)
+- [📂 專案架構](#-專案架構)
+- [🛠 技術棧](#-技術棧)
+- [🚀 快速開始](#-快速開始)
+  - [前置需求](#前置需求)
+  - [安裝教學](#安裝教學)
+  - [設定環境](#設定環境)
+- [💡 使用說明](#-使用說明)
 
-## ✨ Features
+## ✨ 功能特色
 
-- **Automated Web Crawling**: Extracts event agendas, time slots, and speaker information directly from event websites using `LangChain`'s web loaders.
-- **AI-Powered Script Generation**: Utilizes **Google Gemini** models to generate professional MC scripts based on **structured prompt instructions**.
-- **Customizable Tone**: Capable of adjusting the speech style based on the event type (e.g., formal for seminars, lively for commercial events).
-- **Structured Output**: Generates results in JSON format, converts them to Pandas DataFrames, and converts the final output to a text file.
-- **Token Usage Tracking**: Monitors input and output tokens for cost and performance management.
+- **多源資料讀取**：
+    - **網頁爬蟲**：直接輸入活動網址，自動擷取議程資訊（使用 LangChain WebBaseLoader）。
+    - **多格式支援**：支援上傳 PDF, CSV, Excel, Word, Markdown, Text 等格式的議程檔案。
+- **AI 智能生成**：
+    - 核心採用 **Google Gemini** 模型（`gemini-3-flash-preview`），具備長文本理解與高生成品質。
+    - 透過精心設計的 **Prompt Engineering**，確保產出的講稿專業且符合活動情境。
+- **風格客製化**：
+    - 系統會根據活動性質自動調整語氣（例如：研討會偏向專業正式，商業活動則較活潑）。
+- **結構化輸出**：
+    - 自動解析並整理講者職稱、姓名與演講主題。
+    - 提供 **CSV** 與 **TXT** 兩種格式下載，方便後續編輯與使用。
+- **透明化資訊**：
+    - 介面即時顯示 Token 使用量與處理狀態，讓您掌握 API 使用成本。
 
-## 🔄 Workflow
+## 🔄 運作流程
 
 ```mermaid
 flowchart TD
     %% Nodes
-    Input(["Input: Event URL"])
-    WebLoader["Web Crawler<br/>(LangChain WebBaseLoader)"]
-    PromptEngine["Prompt Engineering<br/>(System & User Prompts)"]
+    Input(["輸入: 活動網址 或 檔案"])
+    Loader["資料讀取模組<br/>(LangChain Loaders)"]
+    PromptEngine["Prompt 工程<br/>(系統與使用者提示詞)"]
     LLM(("Google Gemini LLM"))
-    Parser["Output Parser<br/>(JSON & Pydantic)"]
-    DataProcess["Data Transformation"]
-    OutputDF(["Output: DataFrame"])
-    OutputTxt(["Output: Text File"])
+    Parser["輸出解析<br/>(Json & Pydantic)"]
+    DataProcess["資料轉換與存檔"]
+    OutputDF(["輸出: 預覽表格"])
+    OutputFiles(["輸出: CSV & TXT 檔案"])
 
     %% Edge
-    Input --> WebLoader
-    WebLoader -->|Page Content| PromptEngine
-    PromptEngine -->|Context & Instructions| LLM
-    LLM -->|Raw Response| Parser
-    Parser -->|Structured Data| DataProcess
+    Input --> Loader
+    Loader -->|原始內容| PromptEngine
+    PromptEngine -->|結構化提示| LLM
+    LLM -->|AI 回應| Parser
+    Parser -->|結構化資料| DataProcess
     DataProcess --> OutputDF
-    DataProcess --> OutputTxt
+    DataProcess --> OutputFiles
 ```
 
-## 📂 Project Structure
+## 📂 專案架構
 
 ```
 Agenda-Speech-Generator/
-├── code/
-│   ├── mod/
-│   │   ├── A_LLM.py       # Core LLM interaction, web loading, and prompt management
-│   │   ├── B_text.py      # Text transformation and file saving utilities
-│   │   └── O_prompt.py    # System and User prompt templates
-│   └── crawl.ipynb        # Main Jupyter Notebook for execution
-├── .env                   # Environment variables (API Keys)
-├── .gitignore             # Git ignore rules
-└── README.md              # Project documentation
+├── app.py                 # Gradio 應用程式主入口 (Main Entry Point)
+├── requirements.txt       # 專案依賴套件清單
+├── .env                   # 環境變數設定檔 (需自行建立)
+├── src/
+│   └── mod/
+│       ├── A_LLM.py       # 核心模組：LLM 連線、檔案讀取、Prompt 組裝
+│       ├── B_text.py      # 工具模組：資料轉檔 (DataFrame/Text) 與存檔功能
+│       └── O_prompt.py    # 定義 System Prompt 與 User Prompt 模板
+└── README.md              # 專案說明文件
 ```
 
-## 🛠 Tech Stack
+## 🛠 技術棧
 
-- **Language**: Python 3.13+
-- **LLM Framework**: [LangChain](https://www.langchain.com/)
-- **Model Provider**: Google Gemini (`gemini-3-flash-preview`)
-- **Data Manipulation**: Pandas
-- **Environment Management**: python-dotenv
+- **程式語言**: Python 3.10+
+- **網頁框架**: [Gradio](https://www.gradio.app/) (快速建置 AI web app)
+- **LLM 框架**: [LangChain](https://www.langchain.com/)
+- **AI 模型**: Google Gemini (`gemini-3-flash-preview`)
+- **資料處理**: Pandas, Pydantic
+- **環境管理**: python-dotenv
 
-## 🚀 Getting Started
+## 🚀 快速開始
 
-Follow these steps to set up and run the project locally.
+請依照以下步驟在本地端執行本專案。
 
-### Prerequisites
+### 前置需求
 
-- Python 3.10 or higher
-- A Google Cloud API Key with access to Gemini models.
+- Python 3.10 或更高版本
+- Google Cloud API Key (需開通 Gemini 模型存取權限)
 
-### Installation
+### 安裝教學
 
-1. **Clone the repository**
+1. **複製專案 (Clone Repository)**
    ```bash
    git clone https://github.com/your-username/Agenda-Speech-Generator.git
    cd Agenda-Speech-Generator
    ```
 
-2. **Install dependencies**
-   Ensure you have the required packages installed. You can install them via pip:
+2. **安裝依賴套件 (Install Dependencies)**
+   建議使用虛擬環境 (Virtual Environment)。
    ```bash
-   pip install langchain langchain-community langchain-google-genai pandas python-dotenv notebook beautifulsoup4
+   pip install -r requirements.txt
    ```
-   *Note: If you are using Poetry, simply run `poetry install`.*
 
-### Configuration
+### 設定環境
 
-1. Create a `.env` file in the root directory.
-2. Add your Google API key and User Agent string:
+1. 在專案根目錄建立一個 `.env` 檔案。
+2. 填入您的 API Key 與 User Agent 設定：
 
    ```inf
    GOOGLE_API=your_google_api_key_here
-   USER_AGENT=your_user_agent_string
+   USER_AGENT=my-app-user-agent
    ```
 
-## 💡 Usage
+## 💡 使用說明
 
-The project is designed to be run via a Jupyter Notebook.
-
-1. **Open the Notebook**
-   Launch Jupyter Notebook or JupyterLab and open `code/crawl.ipynb`.
-
-2. **Set Target URL**
-   In the notebook, modify the `url` variable to point to your target event agenda page.
-   > **Note**: The target webpage **must** contain a clear event agenda for the crawler to extract.
-   ```python
-   url = "https://www.digitimes.com.tw/seminar/NTTDATA_20251212/"
+1. **啟動應用程式**
+   在終端機執行：
+   ```bash
+   python app.py
    ```
 
-3. **Run Cells**
-   Execute the cells sequentially to:
-   - Load web content.
-   - Connect to the LLM.
-   - Generate the script.
-   - View the output DataFrame.
-   - Save the final script to a text file.
+2. **操作介面**
+   - 程式啟動後，會顯示本地訪問網址 (通常為 `http://127.0.0.1:7860`)。
+   - **Web URL 分頁**：輸入活動網址，點擊「開始生成」。
+   - **File Upload 分頁**：上傳議程檔案 (PDF/Excel/Word等)，點擊「開始生成」。
 
-4. **Output**
-   The generated speech script will be displayed in the notebook and saved to the specified path (default: `data/text.txt`, ensure the directory exists or update the path in the notebook).
-
-## 🗺️ Roadmap
-
-- [ ] **User Interface (UI)**: Develop a user-friendly graphical interface for easier interaction.
-- [ ] **Hugging Face Deployment**: Deploy the application to Hugging Face Spaces for public access.
-- [ ] **Model Optimization**: Fine-tune prompt engineering for better speech quality.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+3. **取得結果**
+   - 介面將顯示議程表預覽。
+   - 您可以點擊按鈕下載生成的 `.csv` 表格或 `.txt` 講稿文字檔。
 
 ---
 
-*This project was generated for educational and productivity purposes.*
+*本專案僅供教育與學術研究用途。*
