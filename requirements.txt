@@ -1,12 +1,29 @@
-gradio
-pandas
-python-dotenv
-langchain-community
-langchain-core
-langchain-google-genai
-pydantic
-pypdf
-docx2txt
-openpyxl
-unstructured
-markdown
+# Web Framework & HF Spaces Core
+gradio==6.3.0
+fastapi==0.128.0
+uvicorn==0.40.0
+python-multipart==0.0.21 
+huggingface-hub==1.3.1 
+
+# AI & LLM Frameworks
+google-genai==1.56.0 [cite: 22]
+langchain==1.2.0 [cite: 44]
+langchain-community==0.4.1 [cite: 42]
+langchain-core==1.2.5 [cite: 43]
+langchain-google-genai==4.1.2 [cite: 43]
+langgraph==1.0.5 [cite: 46]
+langchain-text-splitters==1.1.0 [cite: 43]
+
+# Environment & Config
+pydantic==2.12.5 [cite: 66]
+pydantic-settings==2.12.0 [cite: 66]
+python-dotenv==1.2.1 [cite: 68]
+
+# Data Processing
+pandas==2.3.3 [cite: 56]
+numpy==2.4.0 [cite: 54]
+sqlalchemy==2.0.45 [cite: 80]
+
+# HTTP Client
+httpx==0.28.1 
+aiohttp==3.13.2
